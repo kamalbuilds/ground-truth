@@ -91,3 +91,4 @@ h1.hl em{font-style:normal;color:var(--acc)}
 @media(max-width:1100px){body{overflow:auto}.split{grid-template-columns:1fr;height:auto}.pane+.pane{border-left:0;border-top:1px solid var(--line)}}
 .chat>*{flex-shrink:0}
 .composer{flex-wrap:nowrap}.composer input{min-width:160px}.composer #loc{flex:0 0 190px!important;min-width:0!important}.composer .btn{padding:14px 14px}
+[hidden]{display:none!important}

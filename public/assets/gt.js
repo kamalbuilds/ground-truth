@@ -1,7 +1,7 @@
 const $=s=>document.querySelector(s), chat=$('#chat'), sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const STEPS=[
- {k:'HELD',d:'$5 authorized on the agent owner’s PayPal. Not charged.',id:t=>t.authorizationId||t.orderId,st:t=>t.authorizationId?(fake(t)?'DEMO':(t.state==='VOIDED'?'CREATED':(t.authorizationStatus||'AUTHORIZED'))):(t.orderId?'AWAITING APPROVAL':'')},
+ {k:'HELD',d:'$5 authorized on the agent owner’s PayPal. Not charged.',id:t=>t.authorizationId||t.orderId,st:t=>t.authorizationId?(fake(t)?'DEMO':'AUTHORIZED'):(t.orderId?'AWAITING APPROVAL':'')},
  {k:'PHOTO IN',d:'A nearby human accepted the task and sent a photo.',id:t=>t.photo?t.photo.split('/').pop():'',st:t=>t.photo?'RECEIVED':''},
  {k:'VERIFIED',d:'Vision model checks the photo against the question.',id:t=>t.verdict?(t.verdict.sign_text?'“'+t.verdict.sign_text+'”':(t.verdict.answer||'')):'',st:t=>t.verdict?(t.verdict.pass?'PASS':'FAIL'):''},
  {k:'CAPTURED',d:'Proof accepted. PayPal captures the held $5.',id:t=>t.captureId||'',st:t=>t.captureStatus||''},
