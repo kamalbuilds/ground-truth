@@ -46,9 +46,10 @@ async function finish(t){await animateTo(t,1);await think(700);verdictCard(t);aw
  else if(t.verdict?.pass)agent(`<b>${esc(t.verdict.answer)}</b> Verified from a real photo. PayPal captured the $5${t.captureId?` (<span class="mono">${esc(t.captureId)}</span>)`:''}${t.state==='PAID'?' and paid the worker.':t.payoutNote?'. Worker payout is queued.':'.'}`);
  else if(t.error)agent(`PayPal returned an error: <span class="mono">${esc(t.error)}</span>`);}
 let busy=false;
+const DEMO={pass:['Is the Walgreens on this corner a 24-hour pharmacy? Send a photo of the storefront sign.','Walgreens, North Las Vegas, NV'],fail:['Is the Rite Aid pharmacy at Union Tpke & 187th St open right now? Send a photo of the storefront sign.','Union Tpke & 187th St, Queens, NY']};
 async function runDemo(kind){if(busy)return;busy=true;chat.innerHTML='';renderSteps(null,-1);
- const q=$('#q').value;user(q);await think();agent("I can't see the physical world. I'll hire a nearby human and pay only if their photo proves the answer.");await sleep(500);toolCall(q,$('#loc').value);await sleep(900);
- const t=await fetch('/api/demo/'+kind).then(r=>r.json());toolRet(t);$('#pDemo').hidden=!fake(t);renderSteps(t,0);await sleep(1200);
+ const tp=fetch('/api/demo/'+kind).then(r=>r.json());const [q,loc]=DEMO[kind];$('#q').value=q;$('#loc').value=loc;user(q);await think();agent("I can't see the physical world. I'll hire a nearby human and pay only if their photo proves the answer.");await sleep(500);toolCall(q,loc);await sleep(900);
+ const t=await tp;toolRet(t);$('#pDemo').hidden=!fake(t);renderSteps(t,0);await sleep(1200);
  agent(`PayPal is holding $5 (<span class="mono">${esc(t.authorizationId||'')}</span>). Not charged. A nearby worker accepted and sent a photo. <span class="demo-tag">PRESET PHOTO</span>`);const th=agent('<span class="typing"><i></i><i></i><i></i></span> checking the photo');
  const f=await fetch('/api/demo/'+kind+'/photo',{method:'POST'}).then(r=>r.json());th.remove();await finish(f);busy=false}
 async function runLive(){if(busy)return;busy=true;chat.innerHTML='';$('#pDemo').hidden=true;renderSteps(null,-1);
