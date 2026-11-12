@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ground Truth · Worker task</title><link rel="stylesheet" href="/assets/gt.css">
+<style>
+body{overflow:auto}
+.stage{min-height:100vh;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:64px;padding:40px 64px;position:relative;z-index:1}
+.side h2{font-weight:700;font-size:46px;letter-spacing:-.035em;line-height:1.02;margin:14px 0 12px}.side h2 em{font-style:normal;color:var(--acc)}
+.side p{color:var(--mute);font-size:18px;max-width:420px}
+.side.r{justify-self:start}.side.l{justify-self:end;text-align:right}.side.l p{margin-left:auto}
+.phone{width:400px;height:840px;border-radius:56px;background:#000;padding:14px;box-shadow:0 0 0 2px #23272e,0 0 0 9px #0f1114,0 60px 120px -40px rgba(217,255,113,.25)}
+.scr{height:100%;border-radius:44px;background:#0b0d10;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#000;z-index:3}
+.sb{display:flex;justify-content:space-between;padding:16px 28px 0;font:600 14px var(--sans)}
+.ph{padding:26px 22px 22px;display:flex;flex-direction:column;gap:14px;flex:1;overflow:auto}
+.app{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}.app i{width:10px;height:10px;border-radius:3px;background:var(--acc)}
+.price{border:1px solid rgba(217,255,113,.35);border-radius:22px;padding:18px;background:linear-gradient(180deg,rgba(217,255,113,.08),transparent)}
+.price .lbl{font:500 11px var(--mono);letter-spacing:.14em;color:var(--mute)}
+.price .v{font-weight:800;font-size:58px;letter-spacing:-.05em;line-height:1;margin:6px 0}
+.price .g{font-size:13px;color:#cfe7a0}
+.card{border:1px solid var(--line2);border-radius:18px;padding:14px 16px;background:#0e1013}
+.card .lbl{font:500 10px var(--mono);letter-spacing:.14em;color:var(--dim);margin-bottom:4px}
+.card .t{font-size:17px;line-height:1.35;font-weight:500}
+.ph .btn{width:100%;justify-content:center;padding:16px;font-size:17px;border-radius:16px}
+.shot{width:100%;border-radius:16px;max-height:220px;object-fit:cover}
+.vd{border-radius:18px;padding:16px;border:1px solid}
+.vd.pass{border-color:rgba(217,255,113,.5);background:rgba(217,255,113,.06)}.vd.fail{border-color:rgba(255,77,94,.55);background:rgba(255,77,94,.07)}
+.vd .h{font:700 13px var(--mono);letter-spacing:.14em}.vd.pass .h{color:var(--acc)}.vd.fail .h{color:var(--red)}
+.vd .big{font-weight:800;font-size:40px;letter-spacing:-.04em;margin:6px 0}
+.vd ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px}.vd li{font-size:14px;color:#c3cad2;padding-left:18px;position:relative}.vd li:before{content:'→';position:absolute;left:0;color:var(--mute)}
+.vd .ids{font:500 12px var(--mono);color:var(--mute);margin-top:10px;word-break:break-all}
+.spin{width:22px;height:22px;border:3px solid var(--line2);border-top-color:var(--acc);border-radius:50%;animation:sp 0.8s linear infinite;display:inline-block;vertical-align:middle;margin-right:10px}@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:1000px){.stage{grid-template-columns:1fr;padding:0;gap:0}.side{display:none}.phone{width:100%;height:100vh;border-radius:0;padding:0;box-shadow:none}.scr{border-radius:0}.notch{display:none}}
+</style></head><body>
+<div class="stage">
+ <div class="side l"><div class="eyebrow" style="justify-content:flex-end"><span class="n">03</span> Worker view</div><h2>See the price<br><em>before you accept.</em></h2><p>The $5 is already held by PayPal. Snap the photo, get paid the moment it's verified.</p></div>
+ <div class="phone"><div class="scr"><div class="notch"></div><div class="sb"><span id="clock">9:41</span><span>●●● 5G</span></div><div class="ph" id="ph"><div class="app"><i></i>Ground Truth · Field task</div><div class="card"><div class="t">Loading task…</div></div></div></div></div>
+ <div class="side r"><div class="eyebrow"><span class="n">04</span> Proof, then payment</div><h2>A fake photo<br><em>pays nobody.</em></h2><p>A vision model checks the photo. Pass: PayPal captures and pays out. Fail: the hold is voided.</p></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const id=new URLSearchParams(location.search).get('id')||(location.pathname.match(/\/t\/([^/]+)/)||[])[1];
+const ph=$('#ph'),head='<div class="app"><i></i>Ground Truth · Field task</div>';let task;
+const now=()=>{const d=new Date();$('#clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};now();setInterval(now,20000);
+function priceCard(t){const held=!!t.authorizationId;return `<div class="price"><div class="lbl">YOU EARN${/^DEMO/.test(t.authorizationId||'')?' · <span class="demo-tag">DEMO</span>':''}</div><div class="v">$${Number(t.budget||5).toFixed(2)}</div><div class="g">${held?'✓ Held by PayPal · guaranteed on verified proof':'Waiting for PayPal hold…'}</div></div>`}
+function taskCards(t){return `<div class="card"><div class="lbl">QUESTION</div><div class="t">${esc(t.question)}</div></div><div class="card"><div class="lbl">LOCATION</div><div class="t">${esc(t.location)}</div></div>`}
+function verdict(t){const v=t.verdict||{},pass=v.pass;const rs=Array.isArray(v.reasons)?v.reasons:String(v.reason||'').split(/(?<=[.;])\s+/).filter(Boolean);
+ return `${t.photo?`<img class="shot" src="${esc(t.photo)}">`:''}<div class="vd ${pass?'pass':'fail'}"><div class="h">${pass?'✓ VERIFIED':'✕ NOT VERIFIED'}</div><div class="big">${pass?(t.state==='PAID'?'+$'+Number(t.budget).toFixed(2)+' paid':'+$'+Number(t.budget).toFixed(2)+' captured'):'$0 · hold voided'}</div><div style="font-weight:600">${esc(v.answer||'')}${v.sign_text?'<br><span class=mono style="font-size:13px;color:var(--mute)">sign: “'+esc(v.sign_text)+'”</span>':''}</div><ul>${rs.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><div class="ids">${t.captureId?'capture '+esc(t.captureId)+' · '+esc(t.captureStatus)+'<br>':''}${t.payoutBatchId?'payout '+esc(t.payoutBatchId)+' · '+esc(t.payoutItemStatus||t.payoutStatus)+'<br>':''}${t.payoutNote?esc(t.payoutNote)+'<br>':''}${t.state==='VOIDED'?'authorization '+esc(t.voidedAuthorizationId||t.voidId||t.authorizationId)+' · VOIDED':''}${/^DEMO/.test(t.authorizationId||'')?'<br><span class="demo-tag">DEMO · NO PAYPAL CALL</span>':''}${t.photoCredit?'<br><span style="font-size:10px">'+esc(t.photoCredit)+'</span>':''}</div></div>`}
+function render(stage){const t=task;if(!t){ph.innerHTML=head+'<div class="card"><div class="t">Task not found.</div></div>';return}
+ if(t.verdict&&['CAPTURED','PAID','VOIDED'].includes(t.state)){ph.innerHTML=head+verdict(t);return}
+ if(stage==='verifying'){ph.innerHTML=head+priceCard(t)+`<div class="card"><div class="t"><span class="spin"></span>AI is checking your photo…</div></div>`;return}
+ if(stage==='accepted'){ph.innerHTML=head+priceCard(t)+taskCards(t)+`<input id="f" type="file" accept="image/*" capture="environment" hidden><button class="btn primary" id="snap">📷 ${t.demo?'Submit preset photo':'Take / upload photo'}</button>`;
+  $('#snap').onclick=()=>t.demo?submit():$('#f').click();const f=$('#f');if(f)f.onchange=()=>f.files[0]&&submit(f.files[0]);return}
+ ph.innerHTML=head+priceCard(t)+taskCards(t)+`<button class="btn primary" id="acc">Accept task · $${Number(t.budget||5).toFixed(2)}</button><div style="text-align:center;font-size:12px;color:var(--dim)">Paid only if the photo proves the answer</div>`;$('#acc').onclick=()=>render('accepted')}
+async function submit(file){render('verifying');let r;
+ if(task.demo){await new Promise(r=>setTimeout(r,1400));r=await fetch('/api/demo/'+task.demo+'/photo',{method:'POST'}).then(x=>x.json())}
+ else{const fd=new FormData();fd.append('photo',file);r=await fetch('/api/task/'+task.id+'/photo',{method:'POST',body:fd}).then(x=>x.json())}
+ task=r;if(r.error&&!r.verdict){ph.innerHTML=head+`<div class="card"><div class="t">Error: ${esc(r.error)}</div></div>`;return}render()}
+async function load(){if(!id){task=null;return render()}try{const r=await fetch('/api/task/'+id);task=r.ok?await r.json():null}catch{task=null}render();
+ if(task&&!task.authorizationId){const iv=setInterval(async()=>{const r=await fetch('/api/task/'+id);if(r.ok){const n=await r.json();if(n.authorizationId){task=n;clearInterval(iv);render()}}},2000)}}
+load();
+</script></body></html>

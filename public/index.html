@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ground Truth · Agents hire humans, PayPal pays on proof</title><link rel="stylesheet" href="/assets/gt.css"><script>if(location.pathname.startsWith('/t/')){document.documentElement.style.visibility='hidden';fetch('/assets/worker.html').then(r=>r.text()).then(h=>{document.open();document.write(h);document.close()})}</script></head><body>
+<header class="top"><div class="brand"><i></i>Ground Truth <span>/ agent hires a human · PayPal pays on proof</span></div>
+<div class="pills"><div class="pill" id="pPay"><b></b>PayPal sandbox</div><div class="pill" id="pVis"><b></b>Vision</div><div class="pill" id="pOut"><b></b>Payouts</div><div class="pill warn" id="pDemo" hidden><b></b>Demo mode · no PayPal call</div></div></header>
+<main class="split">
+<section class="pane">
+  <div class="eyebrow"><span class="n">01</span> Agent console</div>
+  <h1 class="hl">Your agent can't see the street.<br><em>A human can, for $5.</em></h1>
+  <p class="sub">The agent calls <span class="mono">hire_human</span>. PayPal holds the money. It only moves when a photo proves the answer.</p>
+  <div class="chat" id="chat"></div>
+  <div class="composer">
+    <input id="q" value="Is the pharmacy on 5th St open right now? Photo of the storefront with the hours sign.">
+    <input id="loc" value="5th Street, New York" style="flex:.45;min-width:180px">
+    <button class="btn primary" id="go">Ask agent ↗</button>
+    <button class="btn" data-demo="pass"><span class="demo-tag">DEMO</span> Honest photo</button>
+    <button class="btn" data-demo="fail"><span class="demo-tag">DEMO</span> Fake photo</button>
+  </div>
+</section>
+<section class="pane">
+  <div class="eyebrow"><span class="n">02</span> Money follows evidence</div>
+  <div class="amount"><div class="big held" id="amt">$5.00</div><div class="what">PayPal state<b id="amtWhat">Waiting for the agent</b></div></div>
+  <div class="steps" id="steps"></div>
+  <div class="foot"><span>PayPal Orders v2 · intent=AUTHORIZE → capture / void · Payouts</span><span id="taskId">task —</span></div>
+</section>
+</main>
+<script src="/assets/gt.js"></script></body></html>
